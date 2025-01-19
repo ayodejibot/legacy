@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Clock with Dark Mode</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: var(--bg-gradient);
+      color: var(--text-color);
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    /* Theme Variables */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #87cefa, #1e90ff); /* Light mode background */
+      --text-color: #fff; /* Light mode text */
+      --clock-color: #ffffff;
+      --date-color: #f0f8ff;
+    }
+
+    body.dark {
+      --bg-gradient: linear-gradient(135deg, #000428, #004e92); /* Dark mode background */
+      --text-color: #dcdcdc; /* Dark mode text */
+      --clock-color: #f5f5f5;
+      --date-color: #b0c4de;
+    }
+
+    .clock-container {
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      transition: background 0.5s ease;
+    }
+
+    .clock {
+      font-size: 5rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--clock-color);
+      text-shadow: 0 2px 5px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .date {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--date-color);
+    }
+
+    .glow {
+      animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+      0% {
+        text-shadow: 0 2px 5px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5);
+      }
+      100% {
+        text-shadow: 0 2px 10px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 1);
+      }
+    }
+
+    .toggle-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: var(--text-color);
+      color: var(--bg-gradient);
+      border: none;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark .toggle-button {
+      background: var(--bg-gradient);
+      color: var(--text-color);
+    }
+
+    .toggle-button:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-button" id="themeToggle">Dark</button>
+  <div class="clock-container">
+    <div class="clock glow" id="clock"></div>
+    <div class="date" id="date"></div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const clockElement = document.getElementById('clock');
+      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    function updateDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const date = now.toLocaleDateString(undefined, options);
+
+      const dateElement = document.getElementById('date');
+      dateElement.textContent = date;
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const themeToggle = document.getElementById('themeToggle');
+      body.classList.toggle('dark');
+      themeToggle.textContent = body.classList.contains('dark') ? 'Light' : 'Dark';
+    }
+
+    // Event Listener for Theme Toggle
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+    setInterval(updateClock, 1000); // Update the clock every second
+    updateClock(); // Initialize the clock immediately
+    updateDate(); // Initialize the date
+  </script>
+</body>
+</html>

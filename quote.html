@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Quote Generator</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      transition: background 1s, color 1s; /* Smooth background transition */
+    }
+
+    .container {
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .quote {
+      font-size: 1.5em;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .author {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #ff7eb3;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ff4073;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="quote" id="quote">Click the button to get inspired!</div>
+    <div class="author" id="author"></div>
+    <button id="newQuote">New Quote</button>
+  </div>
+
+  <script>
+    const quotes = [
+      { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+      { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+      { text: "Your time is limited, so don’t waste it living someone else’s life.", author: "Steve Jobs" },
+      { text: "If life were predictable it would cease to be life, and be without flavor.", author: "Eleanor Roosevelt" },
+      { text: "Spread love everywhere you go. Let no one ever come to you without leaving happier.", author: "Mother Teresa" },
+      { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+      { text: "Do not watch the clock. Do what it does. Keep going.", author: "Sam Levenson" },
+      { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" }
+    ];
+
+    const quoteText = document.getElementById('quote');
+    const authorText = document.getElementById('author');
+    const newQuoteButton = document.getElementById('newQuote');
+
+    const colors = [
+      { bgColor: '#FFB6C1', btnColor: '#FF69B4', textColor: '#4B0082' }, // Pink
+      { bgColor: '#ADD8E6', btnColor: '#4682B4', textColor: '#FFD700' }, // Light Blue
+      { bgColor: '#98FB98', btnColor: '#2E8B57', textColor: '#000000' }, // Light Green
+      { bgColor: '#FFFFE0', btnColor: '#F0E68C', textColor: '#00008B' }, // Light Yellow
+      { bgColor: '#D8BFD8', btnColor: '#8A2BE2', textColor: '#FFFFFF' }, // Thistle
+      { bgColor: '#F08080', btnColor: '#CD5C5C', textColor: '#FFFFFF' }, // Light Coral
+      { bgColor: '#FFD700', btnColor: '#FF8C00', textColor: '#2F4F4F' }, // Gold
+      { bgColor: '#F0F8FF', btnColor: '#00BFFF', textColor: '#00008B' }  // Alice Blue
+    ];
+
+    function getRandomQuote() {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      const randomQuote = quotes[randomIndex];
+      quoteText.textContent = `"${randomQuote.text}"`;
+      authorText.textContent = `- ${randomQuote.author}`;
+
+      // Randomize colors
+      const randomColorScheme = colors[Math.floor(Math.random() * colors.length)];
+
+      // Change background, button, and text colors
+      document.body.style.background = randomColorScheme.bgColor;
+      newQuoteButton.style.background = randomColorScheme.btnColor;
+      newQuoteButton.style.color = randomColorScheme.textColor;
+      quoteText.style.color = randomColorScheme.textColor;
+      authorText.style.color = randomColorScheme.textColor;
+    }
+
+    newQuoteButton.addEventListener('click', getRandomQuote);
+  </script>
+</body>
+</html>

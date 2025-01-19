@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Guessing Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f7f7f7;
+      transition: background-color 0.5s ease;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .input-container {
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1.2em;
+      width: 100px;
+      text-align: center;
+      border-radius: 5px;
+      border: 2px solid #ddd;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .message {
+      font-size: 1.5em;
+      color: #333;
+      margin-top: 20px;
+    }
+
+    .score {
+      font-size: 1.2em;
+      color: #333;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Number Guessing Game (1-10)</h1>
+  <div class="input-container">
+    <label for="guess">Guess a number between 1 and 10:</label><br>
+    <input type="number" id="guess" min="1" max="10">
+  </div>
+  <button id="checkGuess">Check Guess</button>
+  <div class="message" id="message">Start guessing!</div>
+  <div class="score" id="score">Attempts Left: 5</div>
+
+  <script>
+    let score = 0;
+    let attemptsLeft = 5;  // Changed to 5 attempts
+    let secretNumber = Math.floor(Math.random() * 10) + 1;
+
+    const guessInput = document.getElementById('guess');
+    const checkButton = document.getElementById('checkGuess');
+    const message = document.getElementById('message');
+    const scoreElement = document.getElementById('score');
+
+    // Function to generate a random light color
+    function getRandomLightColor() {
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    // Function to change background color every half second
+    setInterval(() => {
+      document.body.style.backgroundColor = getRandomLightColor();
+    }, 500);  // Change every 500ms
+
+    checkButton.addEventListener('click', () => {
+      const userGuess = parseInt(guessInput.value);
+
+      if (isNaN(userGuess) || userGuess < 1 || userGuess > 10) {
+        message.textContent = 'Please enter a number between 1 and 10!';
+        return;
+      }
+
+      if (userGuess === secretNumber) {
+        message.textContent = `Correct! The number was ${secretNumber}.`;
+        score++;
+        scoreElement.textContent = `Score: ${score}`;
+        setTimeout(newRound, 1000);
+      } else if (userGuess < secretNumber) {
+        message.textContent = 'Too low! Try again!';
+        decreaseAttempts();
+      } else {
+        message.textContent = 'Too high! Try again!';
+        decreaseAttempts();
+      }
+    });
+
+    function decreaseAttempts() {
+      attemptsLeft--;
+      scoreElement.textContent = `Attempts Left: ${attemptsLeft}`;
+
+      if (attemptsLeft === 0) {
+        gameOver();
+      }
+    }
+
+    function gameOver() {
+      message.textContent = `Game Over! The number was ${secretNumber}.`;
+      guessInput.disabled = true;
+      checkButton.disabled = true;
+    }
+
+    function newRound() {
+      secretNumber = Math.floor(Math.random() * 10) + 1;
+      attemptsLeft = 5;  // Reset attempts to 5
+      scoreElement.textContent = `Attempts Left: ${attemptsLeft}`;
+      guessInput.disabled = false;
+      checkButton.disabled = false;
+      guessInput.value = '';
+      message.textContent = 'Start guessing!';
+    }
+  </script>
+</body>
+</html>

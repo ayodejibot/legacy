@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe Game</title>
+</head>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e2e2e2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    transition: background-color 0.5s;
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    color: #333;
+}
+
+#gameBoard {
+    margin: 20px auto;
+}
+
+.row {
+    display: flex;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cell:hover {
+    background-color: #f0f0f0;
+}
+
+#result {
+    font-size: 1.5em;
+    margin: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 1em;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ddd;
+}
+</style>
+<body>
+    <div class="container">
+        <h1>Tic Tac Toe</h1>
+        <div id="usernameContainer">
+            <input type="text" id="username" placeholder="Enter your username" required>
+            <select id="choice">
+                <option value="X">Choose X </option>
+                <option value="O">Choose O </option>
+            </select>
+            <button id="startGame">Start Game</button>
+        </div>
+        <div id="gameBoard" class="hidden">
+            <div class="row">
+                <div class="cell" data-cell></div>
+                <div class="cell" data-cell></div>
+                <div class="cell" data-cell></div>
+            </div>
+            <div class="row">
+                <div class="cell" data-cell></div>
+                <div class="cell" data-cell></div>
+                <div class="cell" data-cell></div>
+            </div>
+            <div class="row">
+                <div class="cell" data-cell></div>
+                <div class="cell" data-cell></div>
+                <div class="cell" data-cell></div>
+            </div>
+        </div>
+        <div id="result" class="hidden"></div>
+        <button id="restart" class="hidden">Restart</button>
+    </div>
+    <script>
+    const usernameInput = document.getElementById("username");
+const choiceSelect = document.getElementById("choice");
+const startButton = document.getElementById("startGame");
+const gameBoard = document.getElementById("gameBoard");
+const resultDisplay = document.getElementById("result");
+const restartButton = document.getElementById("restart");
+const cells = document.querySelectorAll("[data-cell]");
+let currentPlayer, computerPlayer, board;
+const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+];
+
+startButton.addEventListener("click", startGame);
+cells.forEach(cell => cell.addEventListener("click", handleClick));
+restartButton.addEventListener("click", resetGame);
+
+function startGame() {
+    const username = usernameInput.value.trim();
+    if (!username) {
+        alert("Please enter a username.");
+        return;
+    }
+
+    currentPlayer = choiceSelect.value;
+    computerPlayer = currentPlayer === "X" ? "O" : "X";
+    board = Array(9).fill("");
+
+    gameBoard.classList.remove("hidden");
+    resultDisplay.classList.add("hidden");
+    restartButton.classList.add("hidden");
+
+    document.body.style.backgroundColor = getRandomColor();
+    renderBoard();
+
+    if (computerPlayer === "X") {
+        computerMove();
+    }
+}
+
+function handleClick(e) {
+    const cell = e.target;
+    const index = Array.from(cells).indexOf(cell);
+
+    if (board[index] || checkWinner()) return;
+
+    board[index] = currentPlayer;
+    renderBoard();
+
+    if (checkWinner()) return;
+
+    computerMove();
+}
+
+function computerMove() {
+    let availableMoves = board.map((value, index) => value === "" ? index : null).filter(value => value !== null);
+    const move = findBestMove() || availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    
+    board[move] = computerPlayer;
+    renderBoard();
+    checkWinner();
+}
+
+function renderBoard() {
+    cells.forEach((cell, index) => {
+        cell.textContent = board[index];
+    });
+}
+
+function checkWinner() {
+    for (const combination of winningCombinations) {
+        const [a, b, c] = combination;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            displayResult(board[a] + " wins!");
+            return true;
+        }
+    }
+
+    if (!board.includes("")) {
+        displayResult("It's a draw!");
+        return true;
+    }
+
+    return false;
+}
+
+function displayResult(message) {
+    resultDisplay.textContent = message;
+    resultDisplay.classList.remove("hidden");
+    restartButton.classList.remove("hidden");
+    document.body.style.backgroundColor = getRandomColor();
+}
+
+function resetGame() {
+    board = Array(9).fill("");
+    renderBoard();
+    resultDisplay.classList.add("hidden");
+    restartButton.classList.add("hidden");
+    usernameInput.value = "";
+    choiceSelect.selectedIndex = 0;
+    document.body.style.backgroundColor = "#e2e2e2"; 
+    gameBoard.classList.add("hidden");
+}
+
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function findBestMove() {
+    for (let combo of winningCombinations) {
+        const [a, b, c] = combo;
+        if (board[a] === computerPlayer && board[b] === computerPlayer && board[c] === "") {
+            return c;
+        }
+        if (board[a] === computerPlayer && board[c] === computerPlayer && board[b] === "") {
+            return b;
+        }
+        if (board[b] === computerPlayer && board[c] === computerPlayer && board[a] === "") {
+            return a;
+        }
+    }
+
+    // Block the opponent moves
+    for (let combo of winningCombinations) {
+        const [a, b, c] = combo;
+        if (board[a] === currentPlayer && board[b] === currentPlayer && board[c] === "") {
+            return c;
+        }
+        if (board[a] === currentPlayer && board[c] === currentPlayer && board[b] === "") {
+            return b;
+        }
+        if (board[b] === currentPlayer && board[c] === currentPlayer && board[a] === "") {
+            return a;
+        }
+    }
+
+    return null; // No optimal move
+}
+    </script>
+</body>
+</html>
